@@ -1,10 +1,12 @@
 package fr.masterdapm.ancyen.model;
 
+import java.io.Serializable;
+
 /**
  * Created by cyril on 25/11/17.
  */
 
-public class User {
+public class User implements Serializable{
     private final int id;
     private String email;
     private String password;

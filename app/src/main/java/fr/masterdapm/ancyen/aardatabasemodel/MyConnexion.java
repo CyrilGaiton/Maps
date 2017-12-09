@@ -49,14 +49,12 @@ public class MyConnexion {
 
             if (s.equals("addUser")) {
                 facade.addUser(ois);
+            } else if (s.equals("getUser")) {
+                facade.getUser(ois, oos);
             } else if (s.equals("addRide")) {
                 facade.addRide(ois);
-//                } else if (s.equals("getNextIdEvenement")) {
-//                    facade.sendNextIdEvenement(oos);
-//                } else if (s.equals("getNextIdDate")) {
-//                    facade.sendNextIdDate(oos);
-//                } else if (s.equals("getNextIdUtilisateur")) {
-//                    facade.sendNextIdUtilisateur(oos);
+            } else if (s.equals("getRidesWithEmail")) {
+                facade.getRidesWithEmail(ois, oos);
             } else if (s.equals("close")) {
                 running = false;
             }

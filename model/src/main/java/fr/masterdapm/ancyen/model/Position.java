@@ -1,10 +1,12 @@
 package fr.masterdapm.ancyen.model;
 
+import java.io.Serializable;
+
 /**
  * Created by cyril on 25/11/17.
  */
 
-public class Position {
+public class Position implements Serializable{
     private int longitude;
     private int latitude;
     private int elevation;

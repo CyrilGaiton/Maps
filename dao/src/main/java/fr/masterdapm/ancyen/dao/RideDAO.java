@@ -25,14 +25,15 @@ public class RideDAO {
     private static final String TABLE_NAME = "ride";
     private static final String COL_ID="id";
     private static final String COL_IDORGANIZER="idOrganizer";
-    private static final String COL_DEPARTUREPLACE="departureplace";
-    private static final String COL_DEPRTUREDATE="departuredate";
-    private static final String COL_DEPARTUREHOUR="departurehour";
-    private static final String COL_ARRIVALPLACE="arrivalplace";
+    private static final String COL_DEPARTUREPLACE="departurePlace";
+    private static final String COL_DEPRTUREDATE="departureDate";
+    private static final String COL_DEPARTUREHOUR="departureHour";
+    private static final String COL_ARRIVALPLACE="arrivalPlace";
     private static final String COL_DISTANCE="distance";
     private static final String COL_DURATION="duration";
     private static final String COL_POSITIONS="positions";
     private static final String COL_WAYPOINTS="waypoints";
+    private static final String COL_AUTORISEDEMAILS="autorisedEmails";
     public static final String SQL_CREATE_TABLE = "CREATE TABLE "+TABLE_NAME+
             " (" +
             " "+COL_ID+" INTEGER primary key," +
@@ -45,6 +46,7 @@ public class RideDAO {
             " "+COL_DURATION+" TEXT," +
             " "+COL_POSITIONS+" BLOB," +
             " "+COL_WAYPOINTS+" BLOB," +
+            " "+COL_AUTORISEDEMAILS+" BLOB," +
             " "+"FOREIGN KEY ("+COL_IDORGANIZER+") REFERENCES user (id)"+
             ");";
     private MySQLite mySQLiteBase;
@@ -77,6 +79,7 @@ public class RideDAO {
         values.put(COL_DURATION, ride.getDuration());
         values.put(COL_POSITIONS, toByteArray(ride.getPositions()));
         values.put(COL_WAYPOINTS, toByteArray(ride.getWaypoints()));
+        values.put(COL_AUTORISEDEMAILS, toByteArray(ride.getAutorisedEmails()));
 
         // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
         return db.insert(TABLE_NAME,null,values);
@@ -93,6 +96,7 @@ public class RideDAO {
         values.put(COL_DURATION, ride.getDuration());
         values.put(COL_POSITIONS, toByteArray(ride.getPositions()));
         values.put(COL_WAYPOINTS, toByteArray(ride.getWaypoints()));
+        values.put(COL_AUTORISEDEMAILS, toByteArray(ride.getAutorisedEmails()));
 
         String where = COL_ID+" = ?";
         String[] whereArgs = {ride.getId()+""};
@@ -125,7 +129,8 @@ public class RideDAO {
                     c.getString(c.getColumnIndex(COL_DISTANCE)),
                     c.getString(c.getColumnIndex(COL_DURATION)),
                     toPositions(c.getBlob(c.getColumnIndex(COL_POSITIONS))),
-                    toWaypoints(c.getBlob(c.getColumnIndex(COL_WAYPOINTS))));
+                    toWaypoints(c.getBlob(c.getColumnIndex(COL_WAYPOINTS))),
+                    toStrings(c.getBlob(c.getColumnIndex(COL_AUTORISEDEMAILS))));
             c.close();
         }
 
@@ -136,6 +141,38 @@ public class RideDAO {
     public Cursor getAll() {
         // sélection de tous les enregistrements de la table
         return db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+    }
+
+    public Ride[] getWithEmail(String email){
+        List<Ride> rides = new ArrayList<>();
+        Cursor c = getAll();
+        Ride r;
+        while (c.moveToNext()){
+            String[] emails = toStrings(c.getBlob(c.getColumnIndex(COL_AUTORISEDEMAILS)));
+            for (String e:emails
+                 ) {
+                if (e.equals(email)){
+                    r = new Ride(c.getInt(c.getColumnIndex(COL_ID)),
+                            c.getInt(c.getColumnIndex(COL_IDORGANIZER)),
+                            c.getString(c.getColumnIndex(COL_DEPARTUREPLACE)),
+                            c.getString(c.getColumnIndex(COL_DEPRTUREDATE)),
+                            c.getString(c.getColumnIndex(COL_DEPARTUREHOUR)),
+                            c.getString(c.getColumnIndex(COL_ARRIVALPLACE)),
+                            c.getString(c.getColumnIndex(COL_DISTANCE)),
+                            c.getString(c.getColumnIndex(COL_DURATION)),
+                            toPositions(c.getBlob(c.getColumnIndex(COL_POSITIONS))),
+                            toWaypoints(c.getBlob(c.getColumnIndex(COL_WAYPOINTS))),
+                            toStrings(c.getBlob(c.getColumnIndex(COL_AUTORISEDEMAILS))));
+                    rides.add(r);
+                }
+            }
+        }
+        c.close();
+        Ride[] rides1 = new Ride[rides.size()];
+        for (int i=0; i<rides.size(); i++){
+            rides1[i] = rides.get(i);
+        }
+        return rides1;
     }
 
 
@@ -192,6 +229,26 @@ public class RideDAO {
             w[i] = waypoints.get(i);
         }
         return w;
+    }
+
+    public String[] toStrings(byte[] b) {
+        ByteArrayInputStream binp = new ByteArrayInputStream(b);
+        List<String> strings = new ArrayList<>();
+        try {
+            ObjectInputStream oos = new ObjectInputStream(binp);
+            while (oos.available() > 0){
+                strings.add((String) oos.readObject());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        String[] s = new String[strings.size()];
+        for (int i=0; i<strings.size(); i++){
+            s[i] = strings.get(i);
+        }
+        return s;
     }
 
 }
