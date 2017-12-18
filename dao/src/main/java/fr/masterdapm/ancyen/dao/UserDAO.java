@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import fr.masterdapm.ancyen.model.User;
 
@@ -17,6 +18,7 @@ public class UserDAO {
     private static final String COL_PASSWORD = "password";
     private static final String COL_LASTNAME = "lastName";
     private static final String COL_FIRSTNAME = "firstName";
+    public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
     public static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME +
             " (" +
             " " + COL_EMAIL + " TEXT PRIMARY KEY," +
@@ -32,6 +34,7 @@ public class UserDAO {
     }
 
     public void open() {
+        Log.e("lolmdr", "writable");
         db = mySQLiteBase.getWritableDatabase();
     }
 
@@ -77,7 +80,7 @@ public class UserDAO {
 
         User u = null;
 
-        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_EMAIL + "=" + id, null);
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_EMAIL + " = " + "'" + id + "'", null);
         if (c.moveToFirst()) {
             u = new User(id,
                     c.getString(c.getColumnIndex(COL_PASSWORD)),

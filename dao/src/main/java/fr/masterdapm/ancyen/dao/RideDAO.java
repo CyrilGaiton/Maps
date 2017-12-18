@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -34,10 +35,11 @@ public class RideDAO {
     private static final String COL_POSITIONS="positions";
     private static final String COL_WAYPOINTS="waypoints";
     private static final String COL_AUTORISEDEMAILS="autorisedEmails";
+    public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
     public static final String SQL_CREATE_TABLE = "CREATE TABLE "+TABLE_NAME+
             " (" +
             " "+COL_ID+" INTEGER primary key," +
-            " "+COL_IDORGANIZER+" INTEGER," +
+            " "+COL_IDORGANIZER+" TEXT," +
             " "+COL_DEPARTUREPLACE+" TEXT," +
             " "+COL_DEPRTUREDATE+" TEXT," +
             " "+COL_DEPARTUREHOUR+" TEXT," +
@@ -47,7 +49,7 @@ public class RideDAO {
             " "+COL_POSITIONS+" BLOB," +
             " "+COL_WAYPOINTS+" BLOB," +
             " "+COL_AUTORISEDEMAILS+" BLOB," +
-            " "+"FOREIGN KEY ("+COL_IDORGANIZER+") REFERENCES user (id)"+
+            " "+"FOREIGN KEY ("+COL_IDORGANIZER+") REFERENCES user (email)"+
             ");";
     private MySQLite mySQLiteBase;
     private SQLiteDatabase db;
@@ -121,7 +123,7 @@ public class RideDAO {
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+COL_ID+"="+id, null);
         if (c.moveToFirst()) {
             r = new Ride(c.getInt(c.getColumnIndex(COL_ID)),
-                    c.getInt(c.getColumnIndex(COL_IDORGANIZER)),
+                    c.getString(c.getColumnIndex(COL_IDORGANIZER)),
                     c.getString(c.getColumnIndex(COL_DEPARTUREPLACE)),
                     c.getString(c.getColumnIndex(COL_DEPRTUREDATE)),
                     c.getString(c.getColumnIndex(COL_DEPARTUREHOUR)),
@@ -153,7 +155,7 @@ public class RideDAO {
                  ) {
                 if (e.equals(email)){
                     r = new Ride(c.getInt(c.getColumnIndex(COL_ID)),
-                            c.getInt(c.getColumnIndex(COL_IDORGANIZER)),
+                            c.getString(c.getColumnIndex(COL_IDORGANIZER)),
                             c.getString(c.getColumnIndex(COL_DEPARTUREPLACE)),
                             c.getString(c.getColumnIndex(COL_DEPRTUREDATE)),
                             c.getString(c.getColumnIndex(COL_DEPARTUREHOUR)),
@@ -191,13 +193,20 @@ public class RideDAO {
         return b;
     }
 
+
     public Position[] toPositions(byte[] b) {
         ByteArrayInputStream binp = new ByteArrayInputStream(b);
-        List<Position> positions = new ArrayList<>();
+        List<Position> positions = new ArrayList<Position>();
         try {
-            ObjectInputStream oos = new ObjectInputStream(binp);
-            while (oos.available() > 0){
-                positions.add((Position) oos.readObject());
+            ObjectInputStream ois = new ObjectInputStream(binp);
+            boolean boucle = true;
+            while (boucle){
+                try {
+                    positions.add((Position) ois.readObject());
+                }
+                catch (EOFException e){
+                    boucle = false;
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -213,11 +222,17 @@ public class RideDAO {
 
     public Waypoint[] toWaypoints(byte[] b) {
         ByteArrayInputStream binp = new ByteArrayInputStream(b);
-        List<Waypoint> waypoints = new ArrayList<>();
+        List<Waypoint> waypoints = new ArrayList<Waypoint>();
         try {
-            ObjectInputStream oos = new ObjectInputStream(binp);
-            while (oos.available() > 0){
-                waypoints.add((Waypoint) oos.readObject());
+            ObjectInputStream ois = new ObjectInputStream(binp);
+            boolean boucle = true;
+            while (boucle){
+                try {
+                    waypoints.add((Waypoint) ois.readObject());
+                }
+                catch (EOFException e){
+                    boucle = false;
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -233,11 +248,17 @@ public class RideDAO {
 
     public String[] toStrings(byte[] b) {
         ByteArrayInputStream binp = new ByteArrayInputStream(b);
-        List<String> strings = new ArrayList<>();
+        List<String> strings = new ArrayList<String>();
         try {
-            ObjectInputStream oos = new ObjectInputStream(binp);
-            while (oos.available() > 0){
-                strings.add((String) oos.readObject());
+            ObjectInputStream ois = new ObjectInputStream(binp);
+            boolean boucle = true;
+            while (boucle){
+                try {
+                    strings.add((String) ois.readObject());
+                }
+                catch (EOFException e){
+                    boucle = false;
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

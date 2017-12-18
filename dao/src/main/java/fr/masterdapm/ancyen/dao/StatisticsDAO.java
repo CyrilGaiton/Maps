@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -25,13 +26,14 @@ public class StatisticsDAO {
     private static final String COL_IDRIDE="idRide";
     private static final String COL_IDUSER="idUser";
     private static final String COL_TIMEDPOSITIONS="timedPositions";
+    public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
     public static final String SQL_CREATE_TABLE = "CREATE TABLE "+TABLE_NAME+
             " (" +
             " "+COL_IDRIDE+" INTEGER ," +
             " "+COL_IDUSER+" INTEGER ," +
             " "+COL_TIMEDPOSITIONS+" BLOB," +
-            " "+"FOREIGN KEY ("+COL_IDRIDE+") REFERENCES ride (id)," +
-            " "+"FOREIGN KEY ("+COL_IDUSER+") REFERENCES user (id)," +
+            " "+"FOREIGN KEY ("+COL_IDRIDE+") REFERENCES ride (idRide)," +
+            " "+"FOREIGN KEY ("+COL_IDUSER+") REFERENCES user (email)," +
             " "+"PRIMARY KEY ("+COL_IDRIDE+", "+COL_IDUSER+")" +
             ");";
     private MySQLite mySQLiteBase;
@@ -82,7 +84,7 @@ public class StatisticsDAO {
         return db.delete(TABLE_NAME, where, whereArgs);
     }
 
-    public Statistics get(int idRide, int idUser) {
+    public Statistics get(int idRide, String idUser) {
 
         Statistics s = null;
 
@@ -121,22 +123,28 @@ public class StatisticsDAO {
 
     public TimedPosition[] toTimedPositions(byte[] b) {
         ByteArrayInputStream binp = new ByteArrayInputStream(b);
-        List<TimedPosition> timedpositions = new ArrayList<>();
+        List<TimedPosition> timedPositions = new ArrayList<TimedPosition>();
         try {
-            ObjectInputStream oos = new ObjectInputStream(binp);
-            while (oos.available() > 0){
-                timedpositions.add((TimedPosition) oos.readObject());
+            ObjectInputStream ois = new ObjectInputStream(binp);
+            boolean boucle = true;
+            while (boucle){
+                try {
+                    timedPositions.add((TimedPosition) ois.readObject());
+                }
+                catch (EOFException e){
+                    boucle = false;
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        TimedPosition[] tp = new TimedPosition[timedpositions.size()];
-        for (int i=0; i<timedpositions.size(); i++){
-            tp[i] = timedpositions.get(i);
+        TimedPosition[] p = new TimedPosition[timedPositions.size()];
+        for (int i=0; i<timedPositions.size(); i++){
+            p[i] = timedPositions.get(i);
         }
-        return tp;
+        return p;
     }
 
 }
