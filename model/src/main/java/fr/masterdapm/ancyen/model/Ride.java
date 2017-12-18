@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 public class Ride implements Serializable{
     private final int id;
-    private final int idOrganizer;
+    private final String idOrganizer;
     private String departurePlace;
     private String departureDate;
     private String departureHour;
@@ -22,7 +22,7 @@ public class Ride implements Serializable{
     private Waypoint[] waypoints;
     private String[] autorisedEmails;
 
-    public Ride(int id, int idOrganizer, String departurePlace, String departureDate, String departureHour, String arrivalPlace, String distance, String duration, Position[] positions, Waypoint[] waypoints, String[] autorisedEmails) {
+    public Ride(int id, String idOrganizer, String departurePlace, String departureDate, String departureHour, String arrivalPlace, String distance, String duration, Position[] positions, Waypoint[] waypoints, String[] autorisedEmails) {
         this.id = id;
         this.idOrganizer = idOrganizer;
         this.departurePlace = departurePlace;
@@ -40,7 +40,7 @@ public class Ride implements Serializable{
         return id;
     }
 
-    public int getIdOrganizer() {
+    public String getIdOrganizer() {
         return idOrganizer;
     }
 

@@ -7,22 +7,16 @@ import java.io.Serializable;
  */
 
 public class User implements Serializable{
-    private final int id;
-    private String email;
+    private final String email;
     private String password;
     private String lastName;
     private String firstName;
 
-    public User(int id, String email, String password, String lastname, String firstname) {
-        this.id = id;
+    public User(String email, String password, String lastname, String firstname) {
         this.email = email;
         this.password = password;
         this.lastName = lastname;
         this.firstName = firstname;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getEmail() {

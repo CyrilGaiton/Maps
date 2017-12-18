@@ -8,10 +8,10 @@ import java.io.Serializable;
 
 public class Statistics implements Serializable{
     private final int idRide;
-    private final int idUser;
+    private final String idUser;
     private TimedPosition[] timedPositions;
 
-    public Statistics(int idRide, int idUser, TimedPosition[] timedPositions) {
+    public Statistics(int idRide, String  idUser, TimedPosition[] timedPositions) {
         this.idRide = idRide;
         this.idUser = idUser;
         this.timedPositions = timedPositions;
@@ -21,7 +21,7 @@ public class Statistics implements Serializable{
         return idRide;
     }
 
-    public int getIdUser() {
+    public String getIdUser() {
         return idUser;
     }
 

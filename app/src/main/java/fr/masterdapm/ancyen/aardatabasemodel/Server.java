@@ -1,5 +1,9 @@
 package fr.masterdapm.ancyen.aardatabasemodel;
 
+import android.app.Activity;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -8,12 +12,14 @@ import java.net.Socket;
  * Created by cyril on 09/12/17.
  */
 
-public class Server {
-    private static int port = 5700;
-    private static Facade facade = new Facade();
+public class Server extends Activity {
+    private int port = 5700;
+    private Facade facade = new Facade(this);
 
-
-    public static void main(String[] args) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         ServerSocket serveur;
 

@@ -1,7 +1,6 @@
 package fr.masterdapm.ancyen.aardatabasemodel;
 
-import android.app.Activity;
-import android.database.Cursor;
+import android.content.Context;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -16,9 +15,15 @@ import fr.masterdapm.ancyen.model.User;
  * Created by cyril on 09/12/17.
  */
 
-public class Facade extends Activity{
-    private UserDAO userDAO = new UserDAO(this);
-    private RideDAO rideDAO = new RideDAO(this);
+public class Facade{
+    private UserDAO userDAO;
+    private RideDAO rideDAO;
+
+    public Facade(Context context) {
+        this.userDAO = new UserDAO(context);
+        this.rideDAO = new RideDAO(context);
+    }
+
 
     public void addUser(ObjectInputStream ois){
         userDAO.open();

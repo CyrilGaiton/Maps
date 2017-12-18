@@ -13,15 +13,13 @@ import fr.masterdapm.ancyen.model.User;
 
 public class UserDAO {
     private static final String TABLE_NAME = "user";
-    private static final String COL_ID = "id";
     private static final String COL_EMAIL = "email";
     private static final String COL_PASSWORD = "password";
     private static final String COL_LASTNAME = "lastName";
     private static final String COL_FIRSTNAME = "firstName";
     public static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME +
             " (" +
-            " " + COL_ID + " INTEGER primary key," +
-            " " + COL_EMAIL + " TEXT," +
+            " " + COL_EMAIL + " TEXT PRIMARY KEY," +
             " " + COL_PASSWORD + " TEXT," +
             " " + COL_LASTNAME + " TEXT," +
             " " + COL_FIRSTNAME + " TEXT" +
@@ -43,7 +41,6 @@ public class UserDAO {
 
     public long add(User user) {
         ContentValues values = new ContentValues();
-        values.put(COL_ID, user.getId());
         values.put(COL_EMAIL, user.getEmail());
         values.put(COL_PASSWORD, user.getPassword());
         values.put(COL_LASTNAME, user.getLastName());
@@ -56,35 +53,33 @@ public class UserDAO {
     public int mod(User user) {
 
         ContentValues values = new ContentValues();
-        values.put(COL_EMAIL, user.getEmail());
         values.put(COL_PASSWORD, user.getPassword());
         values.put(COL_LASTNAME, user.getLastName());
         values.put(COL_FIRSTNAME, user.getFirstName());
 
-        String where = COL_ID + " = ?";
-        String[] whereArgs = {user.getId() + ""};
+        String where = COL_EMAIL + " = ?";
+        String[] whereArgs = {user.getEmail() + ""};
 
         // valeur de retour : (int) nombre de lignes affectées par la requête
         return db.update(TABLE_NAME, values, where, whereArgs);
     }
 
-    public int del(int i) {
+    public int del(String id) {
 
-        String where = COL_ID + " = ?";
-        String[] whereArgs = {i + ""};
+        String where = COL_EMAIL + " = ?";
+        String[] whereArgs = {id + ""};
 
         // valeur de retour : (int) nombre de lignes affectées par la clause WHERE, 0 sinon
         return db.delete(TABLE_NAME, where, whereArgs);
     }
 
-    public User get(int id) {
+    public User get(String id) {
 
         User u = null;
 
-        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_ID + "=" + id, null);
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_EMAIL + "=" + id, null);
         if (c.moveToFirst()) {
-            u = new User(c.getInt(c.getColumnIndex(COL_ID)),
-                    c.getString(c.getColumnIndex(COL_EMAIL)),
+            u = new User(id,
                     c.getString(c.getColumnIndex(COL_PASSWORD)),
                     c.getString(c.getColumnIndex(COL_LASTNAME)),
                     c.getString(c.getColumnIndex(COL_FIRSTNAME)));
@@ -100,23 +95,5 @@ public class UserDAO {
         return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
     }
 
-
-    public User getWithEmail(String email) {
-
-        User u = null;
-
-        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_EMAIL + "=" + email, null);
-        if (c.moveToFirst()) {
-            u = new User(c.getInt(c.getColumnIndex(COL_ID)),
-                    c.getString(c.getColumnIndex(COL_EMAIL)),
-                    c.getString(c.getColumnIndex(COL_PASSWORD)),
-                    c.getString(c.getColumnIndex(COL_LASTNAME)),
-                    c.getString(c.getColumnIndex(COL_FIRSTNAME)));
-            c.close();
-        }
-
-        // Retourne l'animal dont l'email est passé en paramètre
-        return u;
-    }
 
 }
