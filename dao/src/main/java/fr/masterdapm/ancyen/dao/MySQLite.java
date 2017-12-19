@@ -15,7 +15,7 @@ public class MySQLite extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 4;
     private static MySQLite instance = null;
 
-    public static MySQLite getInstance(Context context) {
+    public synchronized static MySQLite getInstance(Context context) {
         if (instance == null) {
             Log.e("lolmdr", "ALEDDDDDDDDDD");
             instance = new MySQLite(context); }
