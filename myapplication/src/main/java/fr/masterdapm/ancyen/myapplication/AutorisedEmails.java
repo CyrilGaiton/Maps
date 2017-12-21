@@ -66,8 +66,10 @@ public class AutorisedEmails extends AppCompatActivity {
                 strings[i] = (String) objects[i];
             }
 
-            Ride.set
+            ride.setAutorisedEmails(strings);
 
+            connection.oos.writeObject("addRide");
+            connection.oos.writeObject(ride);
 
             return null;
         }
