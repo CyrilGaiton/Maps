@@ -7,25 +7,25 @@ import java.io.Serializable;
  */
 
 public class Position implements Serializable{
-    private int longitude;
-    private int latitude;
-    private int elevation;
+    private double longitude;
+    private double latitude;
+    private double elevation;
 
-    public Position(int longitude, int latitude, int elevation) {
+    public Position(double longitude, double latitude, double elevation) {
         this.longitude = longitude;
         this.latitude = latitude;
         this.elevation = elevation;
     }
 
-    public int getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public int getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public int getElevation() {
+    public double getElevation() {
         return elevation;
     }
 
