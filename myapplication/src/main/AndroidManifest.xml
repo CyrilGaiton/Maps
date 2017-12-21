@@ -16,7 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AutorisedEmails"></activity>
+        <activity android:name=".AutorisedEmails" />
+        <activity android:name=".TestPicker"></activity>
     </application>
 
 </manifest>
