@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         rideDAO.add(new Ride(1, "jd@gmail.com", "depart"
                 , "depardate", "depar hour",
                 "arric place", "28km", "3h38",
-                positions, waypoints, autoEmails));
+                positions, waypoints, autoEmails, "wait"));
 
         Ride r = rideDAO.get(1);
         Log.e("lolmdr", r.getAutorisedEmails()[1]);

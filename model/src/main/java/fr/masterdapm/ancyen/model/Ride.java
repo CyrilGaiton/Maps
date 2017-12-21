@@ -21,8 +21,9 @@ public class Ride implements Serializable{
     private Position[] positions;
     private Waypoint[] waypoints;
     private String[] autorisedEmails;
+    private String state;
 
-    public Ride(int id, String idOrganizer, String departurePlace, String departureDate, String departureHour, String arrivalPlace, String distance, String duration, Position[] positions, Waypoint[] waypoints, String[] autorisedEmails) {
+    public Ride(int id, String idOrganizer, String departurePlace, String departureDate, String departureHour, String arrivalPlace, String distance, String duration, Position[] positions, Waypoint[] waypoints, String[] autorisedEmails, String state) {
         this.id = id;
         this.idOrganizer = idOrganizer;
         this.departurePlace = departurePlace;
@@ -34,6 +35,7 @@ public class Ride implements Serializable{
         this.positions = positions;
         this.waypoints = waypoints;
         this.autorisedEmails = autorisedEmails;
+        this.state = state;
     }
 
     public int getId() {
@@ -78,5 +80,21 @@ public class Ride implements Serializable{
 
     public String[] getAutorisedEmails() {
         return autorisedEmails;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setPositions(Position[] positions) {
+        this.positions = positions;
+    }
+
+    public void setWaypoints(Waypoint[] waypoints) {
+        this.waypoints = waypoints;
+    }
+
+    public void setAutorisedEmails(String[] autorisedEmails) {
+        this.autorisedEmails = autorisedEmails;
     }
 }

@@ -35,6 +35,7 @@ public class RideDAO {
     private static final String COL_POSITIONS="positions";
     private static final String COL_WAYPOINTS="waypoints";
     private static final String COL_AUTORISEDEMAILS="autorisedEmails";
+    private static final String COL_STATE="state";
     public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
     public static final String SQL_CREATE_TABLE = "CREATE TABLE "+TABLE_NAME+
             " (" +
@@ -49,6 +50,7 @@ public class RideDAO {
             " "+COL_POSITIONS+" BLOB," +
             " "+COL_WAYPOINTS+" BLOB," +
             " "+COL_AUTORISEDEMAILS+" BLOB," +
+            " "+COL_STATE+"TEXT," +
             " "+"FOREIGN KEY ("+COL_IDORGANIZER+") REFERENCES user (email)"+
             ");";
     private MySQLite mySQLiteBase;
@@ -82,7 +84,7 @@ public class RideDAO {
         values.put(COL_POSITIONS, toByteArray(ride.getPositions()));
         values.put(COL_WAYPOINTS, toByteArray(ride.getWaypoints()));
         values.put(COL_AUTORISEDEMAILS, toByteArray(ride.getAutorisedEmails()));
-
+        values.put(COL_STATE, ride.getState());
         // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
         return db.insert(TABLE_NAME,null,values);
     }
@@ -99,6 +101,7 @@ public class RideDAO {
         values.put(COL_POSITIONS, toByteArray(ride.getPositions()));
         values.put(COL_WAYPOINTS, toByteArray(ride.getWaypoints()));
         values.put(COL_AUTORISEDEMAILS, toByteArray(ride.getAutorisedEmails()));
+        values.put(COL_STATE, ride.getState());
 
         String where = COL_ID+" = ?";
         String[] whereArgs = {ride.getId()+""};
@@ -132,7 +135,8 @@ public class RideDAO {
                     c.getString(c.getColumnIndex(COL_DURATION)),
                     toPositions(c.getBlob(c.getColumnIndex(COL_POSITIONS))),
                     toWaypoints(c.getBlob(c.getColumnIndex(COL_WAYPOINTS))),
-                    toStrings(c.getBlob(c.getColumnIndex(COL_AUTORISEDEMAILS))));
+                    toStrings(c.getBlob(c.getColumnIndex(COL_AUTORISEDEMAILS))),
+                    c.getString(c.getColumnIndexOrThrow(COL_STATE)));
             c.close();
         }
 
@@ -164,7 +168,8 @@ public class RideDAO {
                             c.getString(c.getColumnIndex(COL_DURATION)),
                             toPositions(c.getBlob(c.getColumnIndex(COL_POSITIONS))),
                             toWaypoints(c.getBlob(c.getColumnIndex(COL_WAYPOINTS))),
-                            toStrings(c.getBlob(c.getColumnIndex(COL_AUTORISEDEMAILS))));
+                            toStrings(c.getBlob(c.getColumnIndex(COL_AUTORISEDEMAILS))),
+                            c.getString(c.getColumnIndexOrThrow(COL_STATE)));
                     rides.add(r);
                 }
             }
